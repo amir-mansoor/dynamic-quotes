@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Dynamic API Quotes</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" integrity="sha512-PgQMlq+nqFLV4ylk1gwUOgm6CtIIXkKwaIHp/PAIWHzig/lKZSEGKEysh0TCVbHJXCLN7WetD8TFecIky75ZfQ==" crossorigin="anonymous" />
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+</head>
+<body>
+<div class="container">
+	<div class="inner" data-aos="zoom-in">
+		<div class="box">
+			<p class="number">
+				<i id="tweetme" class="fab fa-twitter"></i>
+			</p>
+			<div class="text">
+				<!-- <i class="start-quote fas fa-quote-left"></i> -->
+				<p id="quotes" class="quote"></p>
+				<p id="author" class="author"></p>
+			</div>
+
+			<label class="button">
+				<p id="newQ">New Quote</p>
+			</label>
+		</div>
+	</div>
+</div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script type="text/javascript">
+	AOS.init();
+	let realData = "";
+	let quotesData = "";
+	const quotes = document.getElementById("quotes");
+	const author = document.getElementById("author");
+	const tweetme = document.getElementById("tweetme");
+	const newQ = document.getElementById("newQ");
+
+	const tweetNow = () => {
+		let tweetPost = `https://twitter.com/intent/tweet?text=${quotesData.text}`;
+		window.open(tweetPost)
+	}
+
+	const getNewQuotes = () => {
+		let rnum = Math.floor(Math.random() * 20);
+		quotesData = realData[rnum];
+		quotes.innerHTML = `${quotesData.text}`;
+		quotesData.author == null ? (author.innerHTML = "unKnown") : author.innerHTML = `${quotesData.author}`;
+	}
+	const getQuotes = async () => {
+		const api = "https://type.fit/api/quotes";
+		try {
+			let data = await fetch(api);
+			realData = await data.json();
+			getNewQuotes();
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	getQuotes();
+	tweetme.addEventListener("click", tweetNow);
+	newQ.addEventListener("click", getNewQuotes);
+</script>
+</body>
+</html>
